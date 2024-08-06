@@ -13,10 +13,11 @@ class QuizScreen extends StatefulWidget {
 
 class _QuizScreenState extends State<QuizScreen> {
   late Future quiz;
-  int seconds = 60;
+  int seconds = 30;
   var currentQuestionIndex = 0;
   Timer? timer;
   bool isLoaded = false;
+  bool optionSelected = false; // New flag to track if an option is selected
   var optionsList = [];
   int correctAnswers = 0;
   int incorrectAnswers = 0;
@@ -46,6 +47,10 @@ class _QuizScreenState extends State<QuizScreen> {
     ];
   }
 
+  resetOptionSelected() {
+    optionSelected = false;
+  }
+
   startTimer() {
     timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
@@ -63,8 +68,9 @@ class _QuizScreenState extends State<QuizScreen> {
       isLoaded = false;
       currentQuestionIndex++;
       resetColors();
+      resetOptionSelected(); // Reset the flag when moving to the next question
       timer!.cancel();
-      seconds = 60;
+      seconds = 30;
       startTimer();
     });
   }
@@ -157,7 +163,7 @@ class _QuizScreenState extends State<QuizScreen> {
                             width: 70,
                             height: 70,
                             child: CircularProgressIndicator(
-                              value: seconds / 60,
+                              value: seconds / 30,
                               valueColor:
                                   const AlwaysStoppedAnimation(Colors.white),
                             ),
@@ -165,7 +171,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         ],
                       ),
                      
-                    ],
+                    ],  
                   ),
                   const SizedBox(height: 20),
                   Image.asset("assets/images/ideas.png", width: 200,),
@@ -199,35 +205,38 @@ class _QuizScreenState extends State<QuizScreen> {
                   
                       return GestureDetector(
                         onTap: () {
-                          setState(() {
-                            if (correctAnswer.toString() ==
-                                optionsList[index].toString()) {
-                              optionsColor[index] = Colors.green;
-                              correctAnswers++;
-                            } else {
-                              optionsColor[index] = Colors.red;
-                              incorrectAnswers++;
-                            }
-                            if (currentQuestionIndex < 
-                                data.length - 1) {
-                              Future.delayed(const Duration(seconds: 1), () {
-                                gotoNextQuestion();
-                              });
-                            } else {
-                              timer!.cancel();
-                              Navigator.push(
-                                context, 
-                                MaterialPageRoute(
-                                  builder: (context)=>ResultScreen(
-                                    correctAnswers, 
-                                    incorrectAnswers, 
-                                    currentQuestionIndex+1,
+                          if (!optionSelected) {
+                            setState(() {
+                              optionSelected = true; // Set the flag to true
+                              if (correctAnswer.toString() ==
+                                  optionsList[index].toString()) {
+                                optionsColor[index] = Colors.green;
+                                correctAnswers++;
+                              } else {
+                                optionsColor[index] = Colors.red;
+                                incorrectAnswers++;
+                              }
+                              if (currentQuestionIndex < 
+                                  data.length - 1) {
+                                Future.delayed(const Duration(seconds: 1), () {
+                                  gotoNextQuestion();
+                                });
+                              } else {
+                                timer!.cancel();
+                                Navigator.push(
+                                  context, 
+                                  MaterialPageRoute(
+                                    builder: (context)=>ResultScreen(
+                                      correctAnswers, 
+                                      incorrectAnswers, 
+                                      currentQuestionIndex+1,
+                                    ),
                                   ),
-                                ),
-                              );
-                              //here you can do whatever you want with the results
-                            }
-                          });
+                                );
+                                //here you can do whatever you want with the results
+                              }
+                            });
+                          }
                         },
                         child: Container(
                           margin: const EdgeInsets.only(bottom: 20),

@@ -33,6 +33,8 @@ class ResultScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const SizedBox(height: 20),
+                  Image.asset("assets/images/Prize.png", width: 200,),
                 Text(
                   "Congratulations", 
                   style: TextStyle(
