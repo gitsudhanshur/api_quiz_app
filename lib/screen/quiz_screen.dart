@@ -17,7 +17,7 @@ class _QuizScreenState extends State<QuizScreen> {
   var currentQuestionIndex = 0;
   Timer? timer;
   bool isLoaded = false;
-  bool optionSelected = false; // New flag to track if an option is selected
+  bool optionSelected = false;
   var optionsList = [];
   int correctAnswers = 0;
   int incorrectAnswers = 0;
@@ -68,7 +68,7 @@ class _QuizScreenState extends State<QuizScreen> {
       isLoaded = false;
       currentQuestionIndex++;
       resetColors();
-      resetOptionSelected(); // Reset the flag when moving to the next question
+      resetOptionSelected();
       timer!.cancel();
       seconds = 30;
       startTimer();
@@ -207,7 +207,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         onTap: () {
                           if (!optionSelected) {
                             setState(() {
-                              optionSelected = true; // Set the flag to true
+                              optionSelected = true;
                               if (correctAnswer.toString() ==
                                   optionsList[index].toString()) {
                                 optionsColor[index] = Colors.green;
@@ -233,7 +233,6 @@ class _QuizScreenState extends State<QuizScreen> {
                                     ),
                                   ),
                                 );
-                                //here you can do whatever you want with the results
                               }
                             });
                           }
